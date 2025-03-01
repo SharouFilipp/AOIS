@@ -24,7 +24,7 @@ def convert_to_floating_point(number: float) -> str:
     float_binary_code = sing_number + '.' + exponenta + '.' + mantissa[:MANTISSA_AMT] + '0' * (MANTISSA_AMT - len(mantissa))
     return float_binary_code
 
-# Безнаковое число: 0 - 255 число из 10 -> 2
+# Беззнаковое число: 0 - 255 число из 10 -> 2
 def convert_to_unmarked_code(number: int) -> str:
     number = abs(number)
     binary_code = ''
@@ -35,7 +35,7 @@ def convert_to_unmarked_code(number: int) -> str:
     binary_code = binary_code[::-1]
     return binary_code[-8:]
 
-# Обратный код
+# Обратный код -127 - 127 число из 10 -> 2
 def convert_to_reverse_code(number: int) -> str:
     binary_code_reverse = ''
     if number > 0:
@@ -52,20 +52,19 @@ def convert_from_2_to_10(binary_code: str) -> int:
     result = 0
     number = ''
     if binary_code[0] == '0':
-        for i in range(len(binary_code)):
-            result += int(binary_code[i]) * (2 ** (len(binary_code) - 1 - i))
+        for bit in range(len(binary_code)):
+            result += int(binary_code[bit]) * (2 ** (len(binary_code) - 1 - bit))
     else:
         for element in binary_code[0:]:
             number += '1' if element == '0' else '0'
         number = summa_extra_code(number, BINARY_NUMBER_1)
-        for i in range(len(number)):
-            result += int(number[i]) * (2 ** (len(number) - 1 - i))
+        for bit in range(len(number)):
+            result += int(number[bit]) * (2 ** (len(number) - 1 - bit))
         result = result * (-1)
     return result
 
 # Ковертация дробной части бинарного кода
 def convert_fraction_part(number: str) -> float:
-    print(number)
     fraction_part = 0.0
     for index in range(len(number)):
         fraction_part += float(number[index]) * (2 ** (-(index + 1)))
@@ -74,9 +73,7 @@ def convert_fraction_part(number: str) -> float:
 # Конвертация из плавающей точки в float
 def convert_to_10_from_floating_point(number: str) -> float:
     exponenta = convert_from_2_to_10('0'+ number[2:10])
-    print(exponenta)
     binary_code = float("1." + number[11:]) * (10 ** (abs(exponenta) - 127))
-    print(binary_code)
     binary_code = str(binary_code)
     if binary_code.find("."):
         decimal_part_binary_code = '0' + binary_code[:binary_code.find(".")]
@@ -86,14 +83,26 @@ def convert_to_10_from_floating_point(number: str) -> float:
         return integer_part + fraction_part
     else:
         return convert_from_2_to_10(binary_code)
-    
-def convertation_to_float(binary_code_point: str) -> float:
+
+# Конвертация из промежуточного значения в стандарт. 
+# Пример промежуточного значения 10.101
+def convertation_from_meduim_value_to_float_standart(binary_code_point: str) -> str:
     index_point = binary_code_point.find('.')
     index_first_1 = binary_code_point.find('1')
     mantissa = binary_code_point[index_first_1+1:index_point] + binary_code_point[index_point + 1:]
-    print(mantissa)
     stepen = index_point - (index_first_1 + 1)
     exponenta = convert_to_unmarked_code(stepen + ZERO_POINT)
     float_binary_code = '0' + '.' + exponenta + '.' + mantissa[:MANTISSA_AMT] + '0' * (MANTISSA_AMT - len(mantissa))
     return float_binary_code
-    
+
+#Фиксированная точка в 10
+def convert_from_fixed_point_to_10(binary_code_point:str) -> float:
+    number: float = 0.0
+    index_point = binary_code_point.find('.')
+    integer_part = binary_code_point[:index_point]
+    fraction_part = binary_code_point[index_point + 1:]
+    for bit in range(len(integer_part)):
+        number += int(integer_part[bit]) * (2 ** (len(integer_part) - 1 - bit))
+    for bit in range(len(fraction_part)):
+        number += int(fraction_part[bit]) * (2 ** (- bit - 1))
+    return number

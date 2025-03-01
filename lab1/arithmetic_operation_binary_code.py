@@ -18,8 +18,7 @@ def multiplication_extra_code(binary_code_1: str, binary_code_2: str) -> str:
 
 # Вычитание
 def substraction_2_numbers(binary_code_1: str, binary_code_2: str)  -> str:
-    number = convert_from_2_to_10('0'+binary_code_2) 
-
+    number = convert_from_2_to_10(binary_code_2) 
     negative_binary_code_2 = convert_to_extra_code(number * -1)
     return summa_extra_code(binary_code_1, negative_binary_code_2)
 
@@ -49,23 +48,50 @@ def summa_floating_point(binary_code1: str, binary_code2: str) -> str:
     result_mantissa = mantissa_sum[1:MANTISSA_AMT + 1] + '0' * (MANTISSA_AMT - len(mantissa_sum) + 1)
     return result_sign + '.' + result_exponent + '.' + result_mantissa
 
-
-def divide_binary_code(binary_code1: str, binary_code2: str) -> float:
-    binary_code1 = binary_code1[binary_code1.find('1'):]
+# Деление с фиксированной точкой(целая часть)
+def divide_binary_code(binary_code1: str, binary_code2: str) -> str:
+    binary_code1 = binary_code1[binary_code1.find('1'):] # обрубаем нули
     binary_code2 = binary_code2[binary_code2.find('1'):]
     if binary_code2 == "0":
-        raise ValueError("Деление на ноль невозможно.")
+         raise ValueError("Деление на ноль невозможно.")  #проверка деления на ноль
     number = 0
     integer_part = ""
-    drob_part = ""
+    fraction_part = ""
     for bit in binary_code1:
-        drob_part += bit
-        if len(drob_part) > len(binary_code2) or (len(drob_part) == len(binary_code2) and drob_part >= binary_code2):
+        fraction_part += bit
+        if len(fraction_part) > len(binary_code2) or (len(fraction_part) == len(binary_code2) and int(fraction_part) >= int(binary_code2)):
             integer_part += "1"
-            drob_part = substraction_2_numbers(drob_part, binary_code2)
-            number = convert_from_2_to_10('0' + drob_part) 
-            drob_part = convert_to_unmarked_code(number)
+            fraction_part = substraction_2_numbers(fraction_part, '0' + binary_code2)
+            number = convert_from_2_to_10('0' + fraction_part) 
+            fraction_part = convert_to_unmarked_code(number)
+            fraction_part = fraction_part[fraction_part.find('1')::]
         else:
-            integer_part += "0"
-        drob_part = drob_part[drob_part.find('1')::]    
-    return convertation_to_float(integer_part[1:] +'.'+ drob_part)
+            integer_part += '0'
+    if fraction_part.find('1') != -1: # проверка на остаток
+        fraction_part = divide_fraction(fraction_part, binary_code2) # передаем остаток в другую функцию
+    fraction_part += '0' * (FRACTION_PART - len(fraction_part))
+    integer_part = '0' * (INTEGER_PART - len(integer_part)) + integer_part
+    return integer_part[-INTEGER_PART::] +'.'+ fraction_part[:FRACTION_PART]
+
+# Деление с фиксированной точкой(дробная часть)
+def divide_fraction(binary_code1: str, binary_code2: str) -> str:
+    binary_code1 = binary_code1[binary_code1.find('1'):] # обрубаем нули
+    number = 0
+    integer_part = ""
+    fraction_part = binary_code1
+    for i in range(5):
+        if int(fraction_part) == 0:
+            break
+        fraction_part += '0'
+        while int(fraction_part) < int(binary_code2) :
+            fraction_part += '0'
+            integer_part += '0'
+
+        if len(fraction_part) > len(binary_code2) or (len(fraction_part) == len(binary_code2) and int(fraction_part) >= int(binary_code2)):
+            integer_part += "1"
+            fraction_part = substraction_2_numbers(fraction_part, '0' + binary_code2)
+            number = convert_from_2_to_10('0' + fraction_part) 
+            fraction_part = convert_to_unmarked_code(number)
+            fraction_part = fraction_part[fraction_part.find('1')::]
+
+    return integer_part 

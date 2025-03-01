@@ -1,6 +1,6 @@
 from constants import *
 
-# Сложение дополнительный код
+# Сложение в дополнительном код
 def summa_extra_code(binary_code_1: str, binary_code_2: str) -> str:
     digit = '0'
     sum_binary_code = ''
@@ -25,7 +25,7 @@ def summa_extra_code(binary_code_1: str, binary_code_2: str) -> str:
     sum_binary_code = sum_binary_code[::-1]
     return sum_binary_code
 
-# Дополнительный код
+# Дополнительный код -128 - 127 число из 10 -> 2
 def convert_to_extra_code(number: int) -> str:
     binary_code_reverse = binary_code_extra =''
     if number > 0:
@@ -38,7 +38,7 @@ def convert_to_extra_code(number: int) -> str:
         binary_code_reverse = summa_extra_code(binary_code_reverse, BINARY_NUMBER_1)
     return binary_code_reverse
 
-# Прямой код
+# Прямой код -127 - 127 число из 10 -> 2
 def convert_to_direct_code(number: int) -> str:
     binary_code = ''
     sing_number = '0' if number > 0 else '1'
