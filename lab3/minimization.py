@@ -1,7 +1,7 @@
 from typing import List, Set
 from prettytable import PrettyTable
+from global_perem import *
 
-VARIABLES = "abcde"
 def redactor_str(logic_say: str) -> str:
     final_str = ''
     for i in range(len(logic_say)):
