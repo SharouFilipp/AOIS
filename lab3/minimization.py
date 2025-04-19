@@ -80,22 +80,73 @@ def formiration_result_cknf(logic_s: str) -> str:
     return final_result
 
 
-def table(logic_s, logic_S : str) -> None:
+# def table(logic_s, logic_S : str) -> None:
+
+#     table = PrettyTable()
+#     table.field_names = [''] + logic_S
+#     rows = [item for item in logic_s]
+#     # print(logic_S, 'gggggggggggggggggggggg')
+#     for row in rows:
+#         spis = [row]
+#         chars = list(row)
+#         for stolb in logic_S:
+#             if all(char in stolb for char in chars):
+#                 spis.append('X')
+#             else: 
+#                 spis.append('')
+#         table.add_row([item for item in spis])
+#     print(table)
+
+    
+    
+
+
+def table(logic_s, logic_S):
+    
+    coverage = {}
+    
+    for imp in logic_s:
+        covered = []
+        
+        for m in logic_S:
+           
+            match = True
+            for i in range(len(imp)):
+                if imp not in m:
+                    match = False
+                    break
+            if match:
+                covered.append(m)
+        coverage[imp] = covered
+    
+    remaining_minterms = set(logic_S)
+    essential_implicants = []
+
+    while remaining_minterms:
+        best_imp = None
+        max_covered = 0
+        for imp in coverage:
+            current_covered = set(coverage[imp]) & remaining_minterms
+            if len(current_covered) > max_covered:
+                max_covered = len(current_covered)
+                best_imp = imp
+
+        if not best_imp:
+            break  
+
+        essential_implicants.append(best_imp)
+        remaining_minterms -= set(coverage[best_imp])
 
     table = PrettyTable()
     table.field_names = [''] + logic_S
-    rows = [item for item in logic_s]
-    for row in rows:
-        spis = [row]
-        chars = list(row)
-        for stolb in logic_S:
-            if all(char in stolb for char in chars):
-                spis.append('X')
-            else: 
-                spis.append('')
-        table.add_row([item for item in spis])
-    print(table)
 
+    for imp in essential_implicants:
+        row = [imp]
+        for m in logic_S:
+            row.append('X' if m in coverage[imp] else '')
+        table.add_row(row)
+
+    print(table)
 
 def minimization_cknf(logic_s: str) -> None:
     logic_s =logic_S= redactor_str(logic_s).split(' ')

@@ -12,25 +12,30 @@ def main():
     table_true(variables_amount)
 
     print(result(make_priority(logic_say)))
-    
-    number_1 = number_cdnf(variables_amount)
-    print(number_1)
 
-    print(cdnf(variables_amount))
-    number_2 = number_cknf(variables_amount)
-    print(number_2)
-    print(cknf(variables_amount))
+    cdnf_value = cdnf(variables_amount)
+    cknf_value = cknf(variables_amount)
+    
     
     result_value = get_result_of_table_true()
     print("Индексная форма: ", convert_from_2_to_10(("").join(result_value)))
 
-    print('Минимизированная скнф')
-    minimization_cknf(cknf(variables_amount))
-
-    print('Минимизированная сднф')
-    minimization_cdnf(cdnf(variables_amount))
-
+    if cknf_value != '':
+        print(cknf(variables_amount), 'ggg')
+        number_2 = number_cknf(variables_amount)
+        print(number_2)
+        print('Минимизированная скнф')
+        minimization_cknf(cknf(variables_amount))
+    else:
+        print("Отсутствует скнф")
+    if cdnf_value != '':
+        print(cdnf(variables_amount))
+        number_1 = number_cdnf(variables_amount)
+        print(number_1)
+        print('Минимизированная сднф')
+        minimization_cdnf(cdnf(variables_amount))
+    else:
+        print("Отсутствует сднф")
 
 if __name__ == "__main__":
-    
     main()

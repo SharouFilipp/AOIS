@@ -7,8 +7,9 @@ def make_list_posible_values(logic_say: str) -> int:
     list_of_variables = []
     for element in logic_say:
         if element in VARIABLES:
-            list_of_variables.append(element)
-            variables_amount += 1
+            if element not in list_of_variables:
+                list_of_variables.append(element)
+                variables_amount += 1
     
     combinations_znaczenii = list()
     combinations = list(itertools.product('01', repeat=variables_amount))
