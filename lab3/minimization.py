@@ -14,7 +14,7 @@ def redactor_str(logic_say: str) -> str:
             final_str += logic_say[i]
     return final_str.strip()
 
-def vybor_both(first: str, second: str) -> str:
+def choose_both(first: str, second: str) -> str:
     for i in range(len(first)):
         if first[i] != second[i]:
             return first[:i] + first[i + 1:]
@@ -34,7 +34,7 @@ def refractor(logic_s: List) -> Set:
             variantes.append(new_item)
         for item1 in variantes:
             if item1 in logic_s:
-                result.add(vybor_both(item,item1))
+                result.add(choose_both(item,item1))
                 x =True
         if x == False:
             result.add(item)
@@ -80,86 +80,41 @@ def formiration_result_cknf(logic_s: str) -> str:
     return final_result
 
 
-# def table(logic_s, logic_S : str) -> None:
-
-#     table = PrettyTable()
-#     table.field_names = [''] + logic_S
-#     rows = [item for item in logic_s]
-#     # print(logic_S, 'gggggggggggggggggggggg')
-#     for row in rows:
-#         spis = [row]
-#         chars = list(row)
-#         for stolb in logic_S:
-#             if all(char in stolb for char in chars):
-#                 spis.append('X')
-#             else: 
-#                 spis.append('')
-#         table.add_row([item for item in spis])
-#     print(table)
-
-    
-    
-
-
-def table(logic_s, logic_S):
-    
-    coverage = {}
-    
-    for imp in logic_s:
-        covered = []
-        
-        for m in logic_S:
-           
-            match = True
-            for i in range(len(imp)):
-                if imp not in m:
-                    match = False
-                    break
-            if match:
-                covered.append(m)
-        coverage[imp] = covered
-    
-    remaining_minterms = set(logic_S)
-    essential_implicants = []
-
-    while remaining_minterms:
-        best_imp = None
-        max_covered = 0
-        for imp in coverage:
-            current_covered = set(coverage[imp]) & remaining_minterms
-            if len(current_covered) > max_covered:
-                max_covered = len(current_covered)
-                best_imp = imp
-
-        if not best_imp:
-            break  
-
-        essential_implicants.append(best_imp)
-        remaining_minterms -= set(coverage[best_imp])
-
+def table(logic_s, logic_S : str) -> None:
+    coverage = set()
     table = PrettyTable()
     table.field_names = [''] + logic_S
+    rows = [item for item in logic_s]
+    for row in rows:
+        if len(coverage) != len(logic_S):
+            spis = [row]
+            chars = list(row)
+            for stolb in logic_S:
 
-    for imp in essential_implicants:
-        row = [imp]
-        for m in logic_S:
-            row.append('X' if m in coverage[imp] else '')
-        table.add_row(row)
-
+                if all(char in stolb for char in chars):
+                    spis.append('X')
+                    coverage.add(stolb)
+                else: 
+                    spis.append('')
+            table.add_row([item for item in spis])
     print(table)
 
-def minimization_cknf(logic_s: str) -> None:
-    logic_s =logic_S= redactor_str(logic_s).split(' ')
+def minimization_cknf(logic_s: str) -> str:
+    logic_s = logic_S = redactor_str(logic_s).split(' ')
     for _ in range(len(logic_s[0]) - 1):
         logic_s = refractor(logic_s)
         print(logic_s)
-    print(formiration_result_cknf(logic_s))
+    result = formiration_result_cknf(logic_s)
+    print(result)
     table(logic_s, logic_S)
+    return result
 
-def minimization_cdnf(logic_s: str) -> None:
-    logic_s =logic_S= redactor_str(logic_s).split(' ')
+def minimization_cdnf(logic_s: str) -> str:
+    logic_s =logic_S = redactor_str(logic_s).split(' ')
     for _ in range(len(logic_s[0]) - 1):
         logic_s = refractor(logic_s)
         print(logic_s)
-    print(formiration_result_cdnf(logic_s))
+    result = formiration_result_cdnf(logic_s)
+    print(result)
     table(logic_s, logic_S)
+    return result

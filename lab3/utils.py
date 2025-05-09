@@ -47,8 +47,8 @@ def number_cdnf(variables_amount: Dict) -> List:
         if result_value[i] == '1':
             for element in variable_values:
                 line += variable_values[element][i]
-            chislo = convert_from_2_to_10(line)
-            result.append(chislo)
+            number = convert_from_2_to_10(line)
+            result.append(number)
     return result
     
 
@@ -61,6 +61,6 @@ def number_cknf(variables_amount: Dict) -> List:
         if result_value[i] == '0':
             for element in variable_values:
                 line += variable_values[element][i]
-            chislo = convert_from_2_to_10(line)
-            result.append(chislo)
+            number = convert_from_2_to_10(line)
+            result.append(number)
     return result
