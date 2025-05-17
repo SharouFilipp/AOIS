@@ -83,30 +83,3 @@ def update_hash_table(hs: Dict):
                 insert(new_table, key, value)
     return new_table
 
-
-# hs = create_hash_table(10)
-
-# print(hs)
-
-# insert(hs,'ыаваы','5')
-# insert(hs,'ыыфвыв','4')
-# insert(hs,'вввв','4')
-
-# insert(hs,'крк','3')
-# insert(hs,'ыреккы','1')
-# print(hs)
-# insert(hs,'ырекраы','2')
-# insert(hs,'крк','1212222222')
-# insert(hs,'ыреккы','121222')
-# print(hs)
-# insert(hs,'чч','1212')
-# insert(hs,'ффеккы','121212')
-
-
-# x = find('ыреккы')
-# print("xxxx", x)
-# print(hs)
-# # delteing('вввв')
-# # hs = update_hash_table()
-# print(hs)
-
